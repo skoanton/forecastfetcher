@@ -1,21 +1,26 @@
+import { fetchWeather } from "./weather.js";
+import { pushToGoogleSheets } from "./googleApi.js";
+import dotenv from "dotenv";
+import cron from "node-cron";
+dotenv.config();
+const CITY = process.env.CITY;
 
-import { Command } from "commander";
-import { getForecastCommand, getHistoryCommand } from './commands.js';
-const program = new Command();
-program.version('0.0.1');
+cron.schedule('0 12 * * *', () => {
+    console.log('Starting cron job');
+    main();
+});
 
+async function main() {
+    try {
+        const forecast = await fetchWeather(CITY);
+        if (!forecast) {
+            console.log("No forecast available");
+            return;
+        }
+        await pushToGoogleSheets(forecast);
+    }
+    catch (error) {
+        console.error("Error in main function:", error.message)
+    }
 
-program.command('history')
-    .description('Show History')
-    .action(async () => {
-        await getHistoryCommand();
-    });
-
-program.command('forecast <city>')
-    .description('Show Forecast for <city>')
-    .action(async (city) => {
-        await getForecastCommand(city);
-    });
-
-
-program.parse(process.argv);
+}

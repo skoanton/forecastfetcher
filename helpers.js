@@ -1,20 +1,16 @@
-import fs from 'fs';
 export function roundNumber(number) {
     return Math.round(number);
 }
 
-export async function saveHistory(city, weather) {
+export function getCurrentTime() {
     const currentDateTime = new Date().toString();
     const formattedTime = currentDateTime.split('GMT')[0];
-    const history = JSON.parse(fs.readFileSync('history.json', 'utf8'));
-    if (!history) {
-        fs.writeFileSync('history.json', JSON.stringify([]));
-    }
-    history.push({
-        city: city,
-        temperature: weather.temperature,
-        description: weather.description,
-        time: formattedTime
-    });
-    fs.writeFileSync('history.json', JSON.stringify(history));
+    formattedTime.trim();
+    return formattedTime;
+}
+
+export function convertMillisecondsToTime(milliseconds) {
+    const date = new Date(milliseconds * 1000);
+    console.log(date.toTimeString());
+    return date.toTimeString().split('GMT')[0];
 }
