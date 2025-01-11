@@ -5,7 +5,7 @@ import { roundNumber, getCurrentTime, convertMillisecondsToTime, firstLetterToUp
 dotenv.config();
 const API_KEY = process.env.OPEN_WEATHER_MAP_API_KEY;
 const CITY = process.env.CITY;
-const METRIC = process.env.METRIC;
+const UNITS = process.env.UNITS;
 
 export async function fetchWeather() {
     try {
@@ -15,7 +15,7 @@ export async function fetchWeather() {
             console.log("No city or something went wrong");
             return;
         }
-        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.latitude}&lon=${coordinates.longitude}&appid=${API_KEY}&units=${METRIC}`);
+        const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.latitude}&lon=${coordinates.longitude}&appid=${API_KEY}&units=${UNITS}`);
 
         if (response.status !== 200) {
             throw new Error('Error fetching data');
@@ -24,17 +24,16 @@ export async function fetchWeather() {
         return {
             time: getCurrentTime(),
             main: data.weather[0].main,
-            temperature: roundNumber(data.main.temp) + "°C",
+            temperature: roundNumber(data.main.temp) + (UNITS === "metric" ? "°C" : "°F"),
             description: firstLetterToUpperCase(data.weather[0].description),
             humidity: data.main.humidity + "%",
-            visibility: data.visibility / 1000 + " km",
+            visibility: data.visibility / 1000 + (UNITS === "metric" ? " km" : " miles"),
             wind: {
-                speed: data.wind.speed + " m/s",
+                speed: data.wind.speed + (UNITS === "metric" ? " m/s" : " mph"),
                 deg: data.wind.deg + "°"
             },
             sunrise: convertMillisecondsToTime(data.sys.sunrise),
             sunset: convertMillisecondsToTime(data.sys.sunset)
-
         };
 
 
