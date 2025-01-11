@@ -11,6 +11,9 @@ export function getCurrentTime() {
 
 export function convertMillisecondsToTime(milliseconds) {
     const date = new Date(milliseconds * 1000);
-    console.log(date.toTimeString());
     return date.toTimeString().split('GMT')[0];
+}
+
+export function firstLetterToUpperCase(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }

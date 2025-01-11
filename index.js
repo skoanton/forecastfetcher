@@ -1,9 +1,6 @@
 import { fetchWeather } from "./weather.js";
 import { pushToGoogleSheets } from "./googleApi.js";
-import dotenv from "dotenv";
 import cron from "node-cron";
-dotenv.config();
-const CITY = process.env.CITY;
 
 cron.schedule('0 12 * * *', () => {
     console.log('Starting cron job');
@@ -12,7 +9,7 @@ cron.schedule('0 12 * * *', () => {
 
 async function main() {
     try {
-        const forecast = await fetchWeather(CITY);
+        const forecast = await fetchWeather();
         if (!forecast) {
             console.log("No forecast available");
             return;
