@@ -23,8 +23,8 @@ Before running the app, ensure you have the following installed:
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd forecast-app
+   git clone git@github.com:skoanton/forecastfetcher.git
+   cd forecastfetcher
    ```
 
 2. Install dependencies:
