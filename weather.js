@@ -21,6 +21,7 @@ export async function fetchWeather() {
             throw new Error('Error fetching data');
         }
         const data = response.data;
+
         return {
             time: getCurrentTime(),
             main: data.weather[0].main,

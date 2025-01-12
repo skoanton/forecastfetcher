@@ -14,6 +14,7 @@ async function main() {
             console.log("No forecast available");
             return;
         }
+        console.log("Forecast fetched successfully");
         await pushToGoogleSheets(forecast);
     }
     catch (error) {
