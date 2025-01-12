@@ -2,7 +2,7 @@ import { fetchWeather } from "./weather.js";
 import { pushToGoogleSheets } from "./googleApi.js";
 import cron from "node-cron";
 
-cron.schedule('0/ 1 * * * *', () => {
+cron.schedule('*/1 * * * *', () => {
     console.log('Starting cron job');
     main();
 });
