@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      args:
+        NODE_ENV: ${NODE_ENV}
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - credentials-data:/app/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    stdin_open: true # Håller stdin öppen
+    tty: true # Aktiverar TTY
+    command: [ "node", "index.js" ]
+
+volumes:
+  credentials-data: # Definiera volymen
