@@ -6,10 +6,13 @@ dotenv.config();
 const API_KEY = process.env.OPEN_WEATHER_MAP_API_KEY;
 const CITY = process.env.CITY;
 const UNITS = process.env.UNITS;
-
 export async function fetchWeather() {
     try {
 
+        if (!API_KEY || !CITY || !UNITS) {
+            console.log("Missing environment variables");
+            return null;
+        }
         const coordinates = await fetchCoordinates();
         if (!coordinates) {
             console.log("No city or something went wrong");
@@ -21,6 +24,7 @@ export async function fetchWeather() {
             throw new Error('Error fetching data');
         }
         const data = response.data;
+
         return {
             time: getCurrentTime(),
             main: data.weather[0].main,
