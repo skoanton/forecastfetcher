@@ -1,11 +1,12 @@
 import { google } from 'googleapis';
-import { authenticate } from '@google-cloud/local-auth';
 import process from 'process';
 import path from 'path';
 import fs from 'fs/promises';
 import dotenv from "dotenv";
+import http from "http";
 
 dotenv.config();
+const DATA_DIR = path.join(process.cwd(), "data");
 const TOKEN_PATH = path.join(process.cwd(), 'data', 'token.json');
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
@@ -22,6 +23,14 @@ const CREDENTIALS = {
     }
 }
 
+async function ensureDataDirExists() {
+    try {
+        await fs.mkdir(DATA_DIR, { recursive: true });
+    } catch (error) {
+        console.error(`Failed to create data directory: ${error.message}`);
+    }
+}
+
 async function loadSavedCredentialsIfExist() {
     try {
         const content = await fs.readFile(TOKEN_PATH);
@@ -29,7 +38,6 @@ async function loadSavedCredentialsIfExist() {
         return google.auth.fromJSON(credentials);
     } catch (err) {
         console.error(`Failed to load saved credentials: ${err.message}`);
-        return null;
     }
 }
 
@@ -37,15 +45,16 @@ async function saveCredentials(client) {
     try {
         const keys = CREDENTIALS;
         const key = keys.installed || keys.web;
+
         const payload = JSON.stringify({
             type: 'authorized_user',
             client_id: key.client_id,
             client_secret: key.client_secret,
-            refresh_token: client.credentials.refresh_token,
+            refresh_token: client.refresh_token,
         });
         await fs.writeFile(TOKEN_PATH, payload);
     } catch (error) {
-        console.error(`Error in saveCredentials: ${err.message}`);
+        console.error(`Error in saveCredentials: ${error.message}`);
         return null;
 
     }
@@ -53,16 +62,39 @@ async function saveCredentials(client) {
 }
 
 export async function authorize() {
-    let client = await loadSavedCredentialsIfExist();
-    if (client) {
-        return client;
+    await ensureDataDirExists();
+    const { client_id, client_secret, redirect_uris } = CREDENTIALS.installed;
+    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+
+    const token = await loadSavedCredentialsIfExist();
+    if (token) {
+        oAuth2Client.setCredentials(token);
+        return oAuth2Client;
     }
-    client = await authenticate({
-        scopes: SCOPES,
-        credentials: CREDENTIALS,
+
+    const authUrl = oAuth2Client.generateAuthUrl({
+        access_type: "offline",
+        prompt: "consent",
+        scope: SCOPES,
     });
-    if (client.credentials) {
-        await saveCredentials(client);
-    }
-    return client;
+
+    console.log(`Authorize this app by visiting this URL:\n${authUrl}`);
+
+    const code = await new Promise((resolve) => {
+        const server = http.createServer((req, res) => {
+            const url = new URL(req.url, `http://${req.headers.host}`);
+            const code = url.searchParams.get("code");
+            if (code) {
+                res.end("Authentication successful! You can close this tab.");
+                server.close();
+                resolve(code);
+            }
+        }).listen(80);
+    });
+    const { tokens } = await oAuth2Client.getToken(code);
+    oAuth2Client.setCredentials(tokens);
+    await saveCredentials(tokens);
+
+    console.log("Authentication successful!");
+    return oAuth2Client;
 }

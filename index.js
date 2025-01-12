@@ -6,10 +6,7 @@ dotenv.config();
 
 if (process.env.NODE_ENV === "development") {
     console.log("Running in development mode");
-    cron.schedule('*/1 * * * *', () => {
-        console.log('Starting cron job');
-        main();
-    });
+    main();
 }
 
 else if (process.env.NODE_ENV === "production") {
