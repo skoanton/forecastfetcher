@@ -71,6 +71,7 @@ async function importValues(auth, forecast) {
             }
         );
         console.log(response.data);
+        console.log('Data pushed to Google Sheets');
     } catch (error) {
         console.error(error);
     }
@@ -78,5 +79,5 @@ async function importValues(auth, forecast) {
 
 export async function pushToGoogleSheets(forecast) {
     authorize().then((auth) => importValues(auth, forecast)).catch(console.error);
-    console.log('Data pushed to Google Sheets');
+
 }
