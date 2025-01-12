@@ -1,11 +1,8 @@
 import { fetchWeather } from "./weather.js";
 import { pushToGoogleSheets } from "./googleApi.js";
-import inquirer from "inquirer";
 import cron from "node-cron";
 import dotenv from "dotenv";
 dotenv.config();
-
-
 
 if (process.env.NODE_ENV === "development") {
     console.log("Running in development mode");
