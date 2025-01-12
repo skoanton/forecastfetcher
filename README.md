@@ -53,7 +53,7 @@ Before running the application, ensure you have the following installed:
    AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
    H_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
    CLIENT_SECRET=<your-client-secret>
-   REDIRECT_URIS="http://localhost"
+   REDIRECT_URIS=http://localhost
    ```
 
    - `OPEN_WEATHER_MAP_API_KEY`: Your API key for the weather service.
@@ -79,7 +79,7 @@ Before running the application, ensure you have the following installed:
      AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
      H_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
      CLIENT_SECRET=<your-client-secret>
-     REDIRECT_URIS="http://localhost"
+     REDIRECT_URIS=http://localhost
      ```
 
   
