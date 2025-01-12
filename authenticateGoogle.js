@@ -24,16 +24,11 @@ const CREDENTIALS = {
 
 async function loadSavedCredentialsIfExist() {
     try {
-        await fs.access(TOKEN_PATH);
         const content = await fs.readFile(TOKEN_PATH);
         const credentials = JSON.parse(content);
         return google.auth.fromJSON(credentials);
     } catch (err) {
-        if (err.code === 'ENOENT') {
-            console.log('Token file not found. Authorization is required.');
-        } else {
-            console.error(`Failed to load saved credentials: ${err.message}`);
-        }
+        console.error(`Failed to load saved credentials: ${err.message}`);
         return null;
     }
 }
@@ -50,11 +45,9 @@ async function saveCredentials(client) {
         });
         await fs.writeFile(TOKEN_PATH, payload);
     } catch (error) {
-        if (err.code === 'ENOENT') {
-            console.error('Credentials file is missing. Please provide credentials.json.');
-        } else {
-            console.error(`Error in saveCredentials: ${err.message}`);
-        }
+        console.error(`Error in saveCredentials: ${err.message}`);
+        return null;
+
     }
 
 }
