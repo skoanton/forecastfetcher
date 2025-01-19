@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === "development") {
 
 else if (process.env.NODE_ENV === "production") {
     console.log("Running in production mode");
-    cron.schedule('* 12 * * *', () => {
+    cron.schedule('0 12 * * *', () => {
         console.log('Starting cron job');
         main();
     });
