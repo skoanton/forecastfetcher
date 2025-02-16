@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { roundNumber, getCurrentTime, convertMillisecondsToTime, firstLetterToUpperCase } from "./helpers.js";
+import { getCurrentTime } from "./helpers.js";
 
 dotenv.config();
 const API_KEY = process.env.OPEN_WEATHER_MAP_API_KEY;
@@ -28,16 +28,16 @@ export async function fetchWeather() {
         return {
             time: getCurrentTime(),
             main: data.weather[0].main,
-            temperature: roundNumber(data.main.temp) + (UNITS === "metric" ? "°C" : "°F"),
-            description: firstLetterToUpperCase(data.weather[0].description),
-            humidity: data.main.humidity + "%",
-            visibility: data.visibility / 1000 + (UNITS === "metric" ? " km" : " miles"),
+            temperature: data.main.temp,
+            description: data.weather[0].description,
+            humidity: data.main.humidity,
+            visibility: data.visibility,
             wind: {
-                speed: data.wind.speed + (UNITS === "metric" ? " m/s" : " mph"),
-                deg: data.wind.deg + "°"
+                speed: data.wind.speed,
+                deg: data.wind.deg 
             },
-            sunrise: convertMillisecondsToTime(data.sys.sunrise),
-            sunset: convertMillisecondsToTime(data.sys.sunset)
+            sunrise: data.sys.sunrise,
+            sunset: data.sys.sunset
         };
 
 
