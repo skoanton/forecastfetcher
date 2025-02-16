@@ -1,6 +1,6 @@
 import axios from "axios";
 import dotenv from "dotenv";
-import { roundNumber, getCurrentTime, convertMillisecondsToTime, firstLetterToUpperCase } from "./helpers.js";
+import { getCurrentTime } from "./helpers.js";
 
 dotenv.config();
 const API_KEY = process.env.OPEN_WEATHER_MAP_API_KEY;
