@@ -12,7 +12,6 @@ app.use(express.json());
 app.get("/api/weather", async (req, res) => {
 
     const authKey = req.headers['authorization'];
-    console.log("API_KEY",process.env.API_KEY);
     if(!authKey){
         return res.status(401).json({error: "Unauthorized"});
     }
