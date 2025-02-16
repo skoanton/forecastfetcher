@@ -1,38 +1,23 @@
 import { fetchWeather } from "./weather.js";
-import { pushToGoogleSheets } from "./googleApi.js";
-import cron from "node-cron";
 import dotenv from "dotenv";
+import express from "express";
 dotenv.config();
 
-if (process.env.NODE_ENV === "development") {
-    console.log("Running in development mode");
-    main();
-}
+const PORT = process.env.PORT || 3000;
 
-else if (process.env.NODE_ENV === "production") {
-    console.log("Running in production mode");
-    cron.schedule('0 12 * * *', () => {
-        console.log('Starting cron job');
-        main();
-    });
-}
-else {
-    console.error("NODE_ENV is not set or is invalid. Please set NODE_ENV to 'development' or 'production'.");
-    process.exit(1);
-}
+const app = express();
 
-async function main() {
+app.use(express.json());
+
+app.get("/api/weather", async (req, res) => {
     try {
-        const forecast = await fetchWeather();
-        if (!forecast) {
-            console.log("No forecast available");
-            return;
-        }
-        console.log("Forecast fetched successfully");
-        await pushToGoogleSheets(forecast);
+        const weather = await fetchWeather();
+        res.json(weather);
+    } catch (error) {     
+        res.status(500).json({ error: error.message });
     }
-    catch (error) {
-        console.error("Error in main function:", error.message)
-    }
+});
 
-}
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
